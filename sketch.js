@@ -1,10 +1,4 @@
 /* eslint-disable no-undef, no-unused-vars */
-
-function setup() {
-  createCanvas(windowWidth, windowHeight);
-  noCursor();
-}
-
 let value = 0;
 let destroyed = 0;
 let started = 0;
@@ -12,6 +6,13 @@ let aX = 0;
 let aY = 0;
 let rectWidth = 50;
 let count = 0;
+let direction = 0;
+
+function setup() {
+  createCanvas(windowWidth, windowHeight);
+  noCursor();
+  direction = random(-5, 5);
+}
 
 function draw() {
   stroke(50);
@@ -19,16 +20,21 @@ function draw() {
 
   if (destroyed) {
     count++;
-    aX = random(0, width);
-    aY = 0;
-    destroyed = 0;
-  } else {
-    aY = aY + 5;
   }
 
-  if (aY > height) {
-    aY = 0;
-    aX = random(0, width);
+  let ood = aX > width || aY < 0 || aY > width;
+  if (destroyed || ood) {
+    direction = random(-5, 5);
+    reset();
+  } else {
+    // move
+
+    aX += 5;
+    aY += direction;
+  }
+
+  if (destroyed) {
+    destroyed = 0;
   }
 
   rect(aX, aY, rectWidth, rectWidth);
@@ -60,6 +66,11 @@ function mouseClicked() {
 windowResized = function () {
   resizeCanvas(windowWidth, windowHeight);
 };
+
+function reset() {
+  aY = random(0, width);
+  aX = 0;
+}
 
 function scope() {
   fill(0, 0, 0, 10);
