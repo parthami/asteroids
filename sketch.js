@@ -6,19 +6,52 @@ let aX = 0;
 let aY = 0;
 let rectWidth = 50;
 let count = 0;
+var squareSize;
 let direction, spin, of1, of2, of3, of4;
+let lastClickX = 0;
+let lastClickY = 0;
 
 function setup() {
-  createCanvas(windowWidth, windowHeight);
-  noCursor();
+  let width = windowWidth * 0.9;
+  let height = width > windowHeight ? windowHeight * 0.9 : width;
+
+  createCanvas(width, height);
+
+  lastClickX = width / 2;
+  lastClickY = height / 2;
+
   randomise();
   rectMode(CENTER);
 }
 
 function draw() {
   stroke(50);
-  background(255);
+  background(49, 111, 63);
 
+  asteroidDestroyed();
+  scope();
+  destroyedText();
+  asteroid();
+}
+
+function mouseClicked() {
+  lastClickX = mouseX;
+  lastClickY = mouseY;
+
+  let inX = lastClickX > aX - rectWidth && lastClickX < aX + rectWidth;
+  let inY = lastClickY > aY - rectWidth && lastClickY < aY + rectWidth;
+
+  if (inX && inY) {
+    destroyed = 1;
+  }
+}
+
+// This Redraws the Canvas when resized
+windowResized = function () {
+  resizeCanvas(windowWidth, windowHeight);
+};
+
+function asteroidDestroyed() {
   if (destroyed) {
     count++;
   }
@@ -36,26 +69,7 @@ function draw() {
   if (destroyed) {
     destroyed = 0;
   }
-
-  scope();
-
-  destroyedText();
-  asteroid();
 }
-
-function mouseClicked() {
-  let inX = mouseX > aX - rectWidth && mouseX < aX + rectWidth;
-  let inY = mouseY > aY - rectWidth && mouseY < aY + rectWidth;
-
-  if (inX && inY) {
-    destroyed = 1;
-  }
-}
-
-// This Redraws the Canvas when resized
-windowResized = function () {
-  resizeCanvas(windowWidth, windowHeight);
-};
 
 function randomise() {
   direction = random(-5, 5);
@@ -84,43 +98,48 @@ function reset() {
 }
 
 function scope() {
-  fill(0, 0, 0, 10);
-  strokeWeight(4);
+  strokeWeight(6);
+
+  // Corner lines
+  stroke(34, 109, 70);
+  line(0, height, lastClickX, lastClickY);
+  line(width, height, lastClickX, lastClickY);
+
+  stroke(22, 72, 47);
   // Sqaure
+  fill(0, 0, 0, 10);
   let diameter = 40;
   let dashWidth = diameter / 4;
-  rect(mouseX, mouseY, diameter * 2, diameter * 2);
-  // Corner lines
-  line(0, height, mouseX, mouseY);
-  line(width, height, mouseX, mouseY);
+  rect(lastClickX, lastClickY, diameter * 2, diameter * 2);
   // Center cross
-  line(mouseX - dashWidth, mouseY, mouseX + dashWidth, mouseY);
-  line(mouseX, mouseY - dashWidth, mouseX, mouseY + dashWidth);
+  line(lastClickX - dashWidth, lastClickY, lastClickX + dashWidth, lastClickY);
+  line(lastClickX, lastClickY - dashWidth, lastClickX, lastClickY + dashWidth);
   // dashes on square
   line(
-    mouseX - diameter - dashWidth,
-    mouseY,
-    mouseX - diameter + dashWidth,
-    mouseY
+    lastClickX - diameter - dashWidth,
+    lastClickY,
+    lastClickX - diameter + dashWidth,
+    lastClickY
   );
   line(
-    mouseX + diameter - dashWidth,
-    mouseY,
-    mouseX + diameter + dashWidth,
-    mouseY
+    lastClickX + diameter - dashWidth,
+    lastClickY,
+    lastClickX + diameter + dashWidth,
+    lastClickY
   );
   line(
-    mouseX,
-    mouseY - diameter - dashWidth,
-    mouseX,
-    mouseY - diameter + dashWidth
+    lastClickX,
+    lastClickY - diameter - dashWidth,
+    lastClickX,
+    lastClickY - diameter + dashWidth
   );
   line(
-    mouseX,
-    mouseY + diameter - dashWidth,
-    mouseX,
-    mouseY + diameter + dashWidth
+    lastClickX,
+    lastClickY + diameter - dashWidth,
+    lastClickX,
+    lastClickY + diameter + dashWidth
   );
+  fill(1);
   strokeWeight(1);
 }
 
